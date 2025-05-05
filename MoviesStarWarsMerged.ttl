@@ -1,0 +1,112 @@
+@prefix : <http://example.org/ontology#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix voc: <https://swapi.co/vocabulary/> .
+
+<http://example.org/ontology> a owl:Ontology ;
+    owl:imports <https://raw.githubusercontent.com/ichsan-frds/semantic-web-quiz/refs/heads/main/movies.ttl> ;
+    owl:imports <https://raw.githubusercontent.com/ichsan-frds/semantic-web-quiz/refs/heads/main/starwars.ttl> .
+
+# Deklarasi Kelas
+:Actor a owl:Class .
+:Director a owl:Class .
+:Genre a owl:Class .
+
+# Deklarasi Properti
+:starredIn a owl:ObjectProperty ;
+    rdfs:domain :Actor ;
+    rdfs:range voc:Film .
+
+:directedBy a owl:ObjectProperty ;
+    rdfs:domain voc:Film ;
+    rdfs:range :Director .
+
+:hasGenre a owl:ObjectProperty ;
+    rdfs:domain voc:Film ;
+    rdfs:range :Genre .
+
+:hasCharacter a owl:ObjectProperty ;
+    rdfs:domain voc:Film ;
+    rdfs:range voc:Character .
+
+:hasActor a owl:ObjectProperty ;
+    rdfs:domain voc:Film ;
+    rdfs:range :Actor .
+
+:plays a owl:ObjectProperty ;
+    rdfs:domain :Actor ;
+    rdfs:range voc:Character .
+
+:releaseYear a owl:DatatypeProperty ;
+    rdfs:domain voc:Film ;
+    rdfs:range xsd:gYear .
+
+# Genre
+:Adventure a :Genre .
+:SciFi a :Genre .
+
+# Director
+:DaveFiloni a :Director ;
+    rdfs:label "Dave Filoni" .
+
+:RickFamuyiwa a :Director ;
+    rdfs:label "Rick Famuyiwa" .
+
+# Actor
+:PedroPascal a :Actor ;
+    rdfs:label "Pedro Pascal" ;
+    :starredIn <https://swapi.co/resource/film/8> ;
+    :plays <https://swapi.co/resource/human/100> .
+
+:GinaCarano a :Actor ;
+    rdfs:label "Gina Carano" ;
+    :starredIn <https://swapi.co/resource/film/8> ;
+    :plays <https://swapi.co/resource/human/101> .
+
+:CarlWeathers a :Actor ;
+    rdfs:label "Carl Weathers" ;
+    :starredIn <https://swapi.co/resource/film/8>, <https://swapi.co/resource/film/9> ;
+    :plays <https://swapi.co/resource/human/102> .
+
+:TemueraMorrison a :Actor ;
+    rdfs:label "Temuera Morrison" ;
+    :starredIn <https://swapi.co/resource/film/9> ;
+    :plays <https://swapi.co/resource/human/103> .
+
+:MingNaWen a :Actor ;
+    rdfs:label "Ming-Na Wen" ;
+    :starredIn <https://swapi.co/resource/film/9> ;
+    :plays <https://swapi.co/resource/human/104> .
+
+# Film
+<https://swapi.co/resource/film/8>
+    :hasGenre :SciFi , :Adventure ;
+    :directedBy :DaveFiloni ;
+    :hasActor :PedroPascal , :GinaCarano , :CarlWeathers ;
+    :releaseYear "2019"^^xsd:gYear .
+
+<https://swapi.co/resource/film/9>
+    :hasGenre :SciFi ;
+    :directedBy :RickFamuyiwa ;
+    :hasActor :TemueraMorrison , :MingNaWen , :CarlWeathers ;
+    :releaseYear "2020"^^xsd:gYear .
+
+# Karakter
+<https://swapi.co/resource/human/100> rdfs:label "Din Djarin" .
+<https://swapi.co/resource/human/101> rdfs:label "Cara Dune" .
+<https://swapi.co/resource/human/102> rdfs:label "Greef Karga" .
+<https://swapi.co/resource/human/103> rdfs:label "Boba Fett" .
+<https://swapi.co/resource/human/104> rdfs:label "Fennec Shand" .
+
+# Disjoint dan Restriction
+:Actor owl:disjointWith :Director .
+
+:FilmWithDirector a owl:Class ;
+    owl:intersectionOf (
+        voc:Film
+        [ a owl:Restriction ;
+          owl:onProperty :directedBy ;
+          owl:minCardinality "1"^^xsd:nonNegativeInteger ]
+    ) .
